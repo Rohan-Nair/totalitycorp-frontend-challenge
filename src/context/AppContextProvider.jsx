@@ -1,6 +1,17 @@
-import { collection, onSnapshot, query } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { createContext, useState } from "react";
-import { db } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
+import toast from "react-hot-toast";
 
 export const AppContext = createContext();
 
@@ -9,6 +20,20 @@ export const AppContextProvider = ({ children }) => {
   const [buttonText, setButtonText] = useState(false);
   const [loading, setLoading] = useState(false);
   const [allProds, setAllProds] = useState([]);
+  const [cartList, setCartList] = useState([]);
+
+  const getProductInfo = async (id) => {
+    setLoading(true);
+    try {
+      const docRef = doc(db, "products", id);
+      const data = await getDoc(docRef);
+      setLoading(false);
+      return data.data();
+    } catch (error) {
+      console.log(error.message);
+      setLoading(false);
+    }
+  };
 
   const getAllProds = async () => {
     setLoading(true);
@@ -29,6 +54,42 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  const getCartItems = async (Useruid) => {
+    setLoading(true);
+    try {
+      const qry = query(collection(db, `carts/User_${Useruid}/cart`));
+      const data = onSnapshot(qry, (snapshot) => {
+        let cartListFetching = [];
+        snapshot.forEach((eachCartItem) => {
+          cartListFetching.push({
+            ...eachCartItem.data(),
+            id: eachCartItem.id,
+          });
+        });
+        setCartList(cartListFetching);
+        setLoading(false);
+      });
+      return () => data;
+      // const cartRef = collection(
+      //   db,
+      //   `carts/User_${auth?.currentUser?.uid}/cart`
+      // );
+      // const cartListFetching = [];
+      // const snapshot = await getDocs(cartRef);
+      // snapshot.docs.forEach((eachCartItem) => {
+      //   cartListFetching.push({
+      //     ...eachCartItem.data(),
+      //     id: eachCartItem.id,
+      //   });
+      //   console.log(cartListFetching);
+      // });
+      // setLoading(false);
+      // return cartListFetching;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const value = {
     visible,
     setVisible,
@@ -39,6 +100,10 @@ export const AppContextProvider = ({ children }) => {
     allProds,
     setAllProds,
     getAllProds,
+    getProductInfo,
+    getCartItems,
+    cartList,
+    setCartList,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

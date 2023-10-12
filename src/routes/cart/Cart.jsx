@@ -1,44 +1,51 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
-import { Trash2 } from "@geist-ui/icons";
-import { Modal } from "@geist-ui/core";
+import { Modal, Spinner } from "@geist-ui/core";
 
-function Cart() {
+import CartCard from "./components/CartCard";
+import { AppContext } from "../../context/AppContextProvider";
+
+const Cart = () => {
   const [modalState, setModalState] = useState(false);
+  const { getCartItems, cartList, loading } = useContext(AppContext);
   const closeHandler = () => {
     setModalState(false);
   };
+
+  useEffect(() => {
+    const Useruid = JSON.parse(localStorage.getItem("user")).user.uid;
+    getCartItems(Useruid);
+  }, []);
+
   return (
     <Layout>
       <div className="h-screen bg-white mt-5 font-mont">
         <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
-        <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0 ">
-          <div className="rounded-lg md:w-2/3 ">
-            <div className="justify-between mb-6 rounded-lg border  shadow-accent shadow-lg bg-white p-6  sm:flex  sm:justify-start">
-              <img
-                src="https://dummyimage.com/400x400"
-                alt="product-image"
-                className="w-full rounded-lg sm:w-40 object-center object-cover"
-              />
-              <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-                <div className="mt-5 sm:mt-0">
-                  <h2 className="text-lg font-bold text-black">Name</h2>
-                  <h2 className="text-sm  text-black">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Quia, quos asperiores? Laborum quibusdam repudiandae
-                    sapiente? Error odio nulla dolores quibusdam.
-                  </h2>
-                  <p className="mt-1  text-md font-bold font-mont text-black">
-                    ₹100
-                  </p>
-                </div>
-                <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
-                  <Trash2 />
-                </div>
+        <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0 scroll-">
+          <div>
+            {loading ? (
+              <div>
+                <Spinner />
               </div>
-            </div>
+            ) : cartList.length === 0 ? (
+              <div>
+                <p>No Items added yet</p>
+              </div>
+            ) : (
+              <div>
+                {cartList.map((eachitem) => (
+                  <CartCard
+                    key={eachitem.id}
+                    imgSrc={eachitem.imgSource}
+                    desc={eachitem.desc}
+                    name={eachitem.name}
+                    price={eachitem.price}
+                    quantity={eachitem.quantity}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-
           <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-accent shadow-lg md:mt-0 md:w-1/3 font-mont">
             <div className="mb-2 flex justify-between border-b-black border-b">
               <p className="text-black font-semibold font-mont">Subtotal</p>
@@ -46,7 +53,7 @@ function Cart() {
             </div>
             <div className="flex justify-between mb-3">
               <p className="text-lg font-bold font-mont">Total</p>
-              <div className>
+              <div>
                 <p className="mb-1 text-lg font-bold font-mont">₹200</p>
               </div>
             </div>
@@ -67,7 +74,7 @@ function Cart() {
                   <div className="flex flex-col items-center justify-center py-0 mx-auto  lg:py-0">
                     <div className="w-full  rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
                       <div className="p-0 space-y-4 md:space-y-6 sm:p-8">
-                        <form className="space-y-4 md:space-y-6" action="#">
+                        <form className="space-y-4 md:space-y-6">
                           <div>
                             <label
                               htmlFor="name"
@@ -146,6 +153,6 @@ function Cart() {
       </div>
     </Layout>
   );
-}
+};
 
 export default Cart;
