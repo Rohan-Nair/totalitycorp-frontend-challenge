@@ -16,14 +16,21 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebase";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function ProductInfo() {
   const { getProductInfo, loading } = useContext(AppContext);
   const [currentProductIddocRef, setCurrentProductIddocRef] = useState("");
   const [productData, setProductData] = useState({});
+  const navigate = useNavigate();
 
   // add to cart
   const addtoCart = async (productData, prodID) => {
+    if (!localStorage.getItem("user")) {
+      toast.error("Login first");
+      navigate("/login");
+      return;
+    }
     const Useruid = JSON.parse(localStorage.getItem("user")).user.uid;
 
     const checkColRef = collection(db, `carts/User_${Useruid}/cart`);
@@ -117,7 +124,7 @@ function ProductInfo() {
 
                 <div className="flex">
                   <span className="title-font font-bold text-2xl text-accent">
-                    ${price}
+                    ₹{price}
                   </span>
                   <button
                     onClick={() =>
