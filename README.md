@@ -9,7 +9,9 @@ This repository contains my submission for the totality corp frontend challenge.
 
 Tech Stack
 
+```
 - React + Vite
 - Tailwind CSS
 - Geist UI
 - Firebase(Auth and Firestore)
+```
