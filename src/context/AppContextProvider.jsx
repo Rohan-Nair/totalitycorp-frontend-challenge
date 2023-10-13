@@ -21,6 +21,7 @@ export const AppContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [allProds, setAllProds] = useState([]);
   const [cartList, setCartList] = useState([]);
+  const [search, setSearch] = useState("");
 
   const getProductInfo = async (id) => {
     setLoading(true);
@@ -38,10 +39,10 @@ export const AppContextProvider = ({ children }) => {
   const getAllProds = async () => {
     setLoading(true);
     try {
-      const qry = query(collection(db, "products"));
-      const data = onSnapshot(qry, (QuerySnapshot) => {
+      let qry = query(collection(db, "products"));
+      const data = onSnapshot(qry, (snapshot) => {
         let productsArray = [];
-        QuerySnapshot.forEach((doc) => {
+        snapshot.forEach((doc) => {
           productsArray.push({ ...doc.data(), id: doc.id });
         });
         setAllProds(productsArray);
@@ -104,6 +105,8 @@ export const AppContextProvider = ({ children }) => {
     getCartItems,
     cartList,
     setCartList,
+    search,
+    setSearch,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

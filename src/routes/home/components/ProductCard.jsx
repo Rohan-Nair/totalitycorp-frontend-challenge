@@ -20,11 +20,10 @@ const ProductCard = ({
     <Card
       onClick={() => viewProduct(id)}
       className="font-mont cursor-pointer"
-      // type="dark"
       width="340px"
     >
       <img
-        className="rounded-md w-full h-72 object-scale-down object-center"
+        className="rounded-t-md w-full h-72 object-scale-down object-center border-b border-b-black pb-1"
         src={imgSrc}
         draggable={false}
       />
@@ -35,13 +34,15 @@ const ProductCard = ({
           {pRating}
         </h5>
       </div>
-      <small className="text-secondary">{pDesc}</small>
+      <small className="text-black font-bold font-mont">{pDesc}</small>
       <p className="mt-1">{pSeller}</p>
       <Card.Footer className="flex justify-between">
-        <p className="text-2xl font-mont text-accent">₹{pPrice}</p>
+        <p className="text-2xl font-mont text-accent font-extrabold">
+          ₹{pPrice}
+        </p>
         <button
           onClick={() => viewProduct(id)}
-          className="font-sans border-white border rounded-md px-3 py-1 text-xl"
+          className="font-mont border-black border rounded-md px-3 py-1 text-xl"
         >
           View product
         </button>

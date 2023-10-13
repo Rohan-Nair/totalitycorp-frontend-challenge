@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoLogoVercel } from "react-icons/io5";
 import { FaShoppingCart } from "react-icons/fa";
 import { BiSolidLogIn, BiSolidLogOut } from "react-icons/bi";
@@ -10,6 +10,8 @@ import { auth } from "../../firebase/firebase";
 export default function Navbar() {
   const { visible } = useContext(AppContext);
   const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+
   const logout = () => {
     signOut(auth);
     localStorage.clear(user);
@@ -18,7 +20,12 @@ export default function Navbar() {
     visible && (
       <div className="flex w-[110vw] lg:w-screen justify-center shadow shadow-accent">
         <div className="font-mont sticky top-0 w-full lg:max-w-7xl z-50 h-14 px-10 text-lg overflow-hidden flex items-center">
-          <div className="flex items-center font-bold gap-2 flex-grow ">
+          <div
+            onClick={() => {
+              navigate("/");
+            }}
+            className="flex items-center font-bold gap-2 flex-grow "
+          >
             <IoLogoVercel />
             Totality
           </div>

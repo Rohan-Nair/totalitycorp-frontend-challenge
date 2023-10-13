@@ -4,9 +4,9 @@ import ProductCard from "./ProductCard";
 import { Spinner } from "@geist-ui/core";
 
 const Products = () => {
-  const { allProds, getAllProds, loading } = useContext(AppContext);
+  const { allProds, getAllProds, loading, search } = useContext(AppContext);
   useEffect(() => {
-    getAllProds();
+    getAllProds("");
   }, []);
   return (
     <section className="text-black  ">
@@ -22,18 +22,24 @@ const Products = () => {
             </div>
           ) : (
             <>
-              {allProds.map((eachprod) => (
-                <ProductCard
-                  key={eachprod.id}
-                  id={eachprod.id}
-                  imgSrc={eachprod.imgSource}
-                  pName={eachprod.name}
-                  pDesc={eachprod.desc}
-                  pPrice={eachprod.price}
-                  pRating={eachprod.rating}
-                  pSeller={eachprod.pSeller}
-                />
-              ))}
+              {allProds
+                .filter((aProd) => {
+                  return search.toLowerCase() === ""
+                    ? aProd
+                    : aProd.name.toLowerCase().includes(search.toLowerCase());
+                })
+                .map((eachprod) => (
+                  <ProductCard
+                    key={eachprod.id}
+                    id={eachprod.id}
+                    imgSrc={eachprod.imgSource}
+                    pName={eachprod.name}
+                    pDesc={eachprod.desc}
+                    pPrice={eachprod.price}
+                    pRating={eachprod.rating}
+                    pSeller={eachprod.pSeller}
+                  />
+                ))}
             </>
           )}
         </div>

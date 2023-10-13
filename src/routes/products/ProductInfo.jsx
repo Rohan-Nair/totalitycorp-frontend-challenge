@@ -18,16 +18,15 @@ import { auth, db } from "../../firebase/firebase";
 import toast from "react-hot-toast";
 
 function ProductInfo() {
-  const { getProductInfo, loading, myCart, setMyCart } = useContext(AppContext);
+  const { getProductInfo, loading } = useContext(AppContext);
   const [currentProductIddocRef, setCurrentProductIddocRef] = useState("");
   const [productData, setProductData] = useState({});
 
   // add to cart
   const addtoCart = async (productData, prodID) => {
-    const checkColRef = collection(
-      db,
-      `carts/User_${auth?.currentUser?.uid}/cart`
-    );
+    const Useruid = JSON.parse(localStorage.getItem("user")).user.uid;
+
+    const checkColRef = collection(db, `carts/User_${Useruid}/cart`);
     const qry = query(checkColRef, where("id", "==", `${prodID}`));
 
     let queryDocs = [];
@@ -37,34 +36,26 @@ function ProductInfo() {
           snapshot.docs.forEach((eachdoc) => {
             queryDocs.push({ ...eachdoc.data(), id: prodID });
           });
-          console.log("hello");
           resolve();
         });
       });
     };
     await func();
     if (queryDocs.length > 0) {
-      const docRef = doc(
-        db,
-        `carts/User_${auth?.currentUser?.uid}/cart/${prodID}`
-      );
+      const docRef = doc(db, `carts/User_${Useruid}/cart/${prodID}`);
       let currentQuant = 0;
       await getDoc(docRef).then((doc) => (currentQuant = doc.data().quantity));
-      updateDoc(
-        doc(db, `carts/User_${auth?.currentUser?.uid}/cart/${prodID}`),
-        { quantity: currentQuant + 1 }
-      );
+      updateDoc(doc(db, `carts/User_${Useruid}/cart/${prodID}`), {
+        quantity: currentQuant + 1,
+      });
       toast.success("Updated cart");
     } else {
       try {
         productData = { ...productData, quantity: 1 };
-        await setDoc(
-          doc(db, `carts/User_${auth?.currentUser?.uid}/cart/${prodID}`),
-          {
-            id: prodID,
-            ...productData,
-          }
-        );
+        await setDoc(doc(db, `carts/User_${Useruid}/cart/${prodID}`), {
+          id: prodID,
+          ...productData,
+        });
         toast.success("Added to Cart");
         return;
       } catch (err) {
@@ -106,7 +97,7 @@ function ProductInfo() {
         <div className="h-96 blur-2xl bottom-0 left-0 aspect-square rounded-full bg-accent bg-opacity-[0.15]  absolute"></div>
         <section className="text-white bg-black font-mont overflow-hidden border border-black shadow-2xl shadow-accent rounded-md mt-5 mx-4 max-w-7xl">
           <div className="px-5 py-10 mx-auto">
-            <div className="mx-auto flex justify-around items-center">
+            <div className="mx-auto flex justify-around items-center flex-wrap">
               <img
                 alt="ecommerce"
                 className="lg:w-1/3 w-full h-96 object-contain object-center z-40"
@@ -120,7 +111,9 @@ function ProductInfo() {
                     {rating}
                   </p>
                 </div>
-                <p className="leading-relaxed border-b mb-5 pb-5">{desc}</p>
+                <p className="leading-relaxed border-b mb-5 pb-5 text-xl">
+                  {desc}
+                </p>
 
                 <div className="flex">
                   <span className="title-font font-bold text-2xl text-accent">

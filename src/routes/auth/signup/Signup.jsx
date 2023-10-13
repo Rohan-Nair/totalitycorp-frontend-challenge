@@ -31,9 +31,7 @@ function Signup() {
           email,
           password
         );
-
-        // console.log(users)
-
+        localStorage.setItem("user", JSON.stringify(users));
         const user = {
           name: name,
           uid: users.user.uid,
@@ -47,6 +45,7 @@ function Signup() {
         setEmail("");
         setPassword("");
         setLoading(false);
+        navigate("/");
       } catch (error) {
         console.log(error);
         setLoading(false);
