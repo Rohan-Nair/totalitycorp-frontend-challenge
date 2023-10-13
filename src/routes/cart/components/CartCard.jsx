@@ -38,7 +38,6 @@ const CartCard = ({ prodID, imgSrc, name, desc, price, quantity }) => {
     const docRef = doc(db, `carts/User_${Useruid}/cart/${prodID}`);
     let currentQuant = 0;
     await getDoc(docRef).then((thisdocument) => {
-      console.log(thisdocument.data());
       currentQuant = thisdocument.data().quantity;
     });
     if (currentQuant === 1) {

@@ -147,7 +147,7 @@ const Cart = () => {
               </Modal>
             </div>
             <div onClick={() => navigate("/")} className="cursor-pointer mt-5">
-              <img src={cartbanner} alt="" />
+              <img className="md:block hidden" src={cartbanner} alt="" />
               <button className="font-mont w-full  bg-transparent py-2 text-center rounded-lg text-black border-black border hover:bg-accent hover:bg-opacity-30 font-bold ">
                 Continue Shopping
               </button>

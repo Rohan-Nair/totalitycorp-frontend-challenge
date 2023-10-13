@@ -48,7 +48,10 @@ const FilterComponent = () => {
               Popularity
             </p>
           </div>
-          <p className="text-sm flex items-center  md:hidden">
+          <p
+            onClick={popularFirst}
+            className="text-sm flex items-center  md:hidden"
+          >
             <CiUndo size={16} />
             Reset
           </p>
