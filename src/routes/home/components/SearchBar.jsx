@@ -14,7 +14,10 @@ const SearchBar = () => {
         }}
         className="flex w-full justify-center relative items-center"
       >
-        <Search className="absolute right-6 md:right-12" />
+        <Search
+          onClick={() => setSearch(searchText)}
+          className="absolute right-6 md:right-12"
+        />
         <input
           type="text"
           value={searchText}
